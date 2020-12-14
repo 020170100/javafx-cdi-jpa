@@ -13,7 +13,7 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>1.8.0.Final</quarkus.platform.version>
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-        <compiler-plugin.version>3.8.0</compiler-plugin.version>
+        <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <docker-plugin.version>0.34.0</docker-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -67,6 +67,11 @@
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.8.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -76,8 +81,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler-plugin.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                     <!-- the parameters=true option is critical so that RESTEasy works fine -->
                     <parameters>true</parameters>
                 </configuration>
@@ -101,62 +106,6 @@
                     <execution>
                         <goals>
                             <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <!-- Automatically start PostgreSQL for integration testing - requires Docker -->
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>${docker-plugin.version}</version>
-                <configuration>
-                    <skip>${skipTests}</skip>
-                    <images>
-                        <image>
-                            <name>postgres:10.5</name>
-                            <alias>postgresql</alias>
-                            <run>
-                                <env>
-                                    <POSTGRES_USER>quarkus_test</POSTGRES_USER>
-                                    <POSTGRES_PASSWORD>quarkus_test</POSTGRES_PASSWORD>
-                                    <POSTGRES_DB>quarkus_test</POSTGRES_DB>
-                                </env>
-                                <ports>
-                                    <port>5432:5432</port>
-                                </ports>
-                                <log>
-                                    <prefix>PostgreSQL: </prefix>
-                                    <date>default</date>
-                                    <color>cyan</color>
-                                </log>
-                                <wait>
-                                    <tcp>
-                                        <mode>mapped</mode>
-                                        <ports>
-                                            <port>5432</port>
-                                        </ports>
-                                    </tcp>
-                                    <time>10000</time>
-                                </wait>
-                            </run>
-                        </image>
-                    </images>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>docker-start</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>stop</goal>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>docker-stop</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
                         </goals>
                     </execution>
                 </executions>
